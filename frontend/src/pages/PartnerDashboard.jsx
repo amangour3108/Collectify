@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Toaster from "../components/Toaster";
 import axios from "../utils/axiosInstance";
 import { useAuth } from "../utils/AuthContext";
 
@@ -48,7 +49,10 @@ export default function PartnerDashboard() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return <>
+      <Toaster show={true} text="Loading" />
+      <div className="p-6" />
+    </>;
   }
 
   if (error) {

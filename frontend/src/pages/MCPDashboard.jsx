@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Toaster from "../components/Toaster";
 import axios from "../utils/axiosInstance";
 import WalletTransfer from "../components/WalletTransfer";
 import PartnerList from "../components/PartnerList";
@@ -66,7 +67,10 @@ export default function MCPDashboard() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return <>
+      <Toaster show={true} text="Loading" />
+      <div className="p-6" />
+    </>;
   }
 
   if (error) {

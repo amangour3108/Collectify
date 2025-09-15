@@ -9,6 +9,3 @@
 frontend/.env
 server/.env
 
-# Build output
-/dist
-/build

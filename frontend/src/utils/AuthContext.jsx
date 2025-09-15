@@ -1,29 +1,36 @@
-// context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    // Replace with real token check or API call
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
+      setUser(storedUser);
+      setToken(storedToken);
+    }
   }, []);
 
-  const login = (userData) => {
+  const login = (userData, tokenValue) => {
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", tokenValue);
     setUser(userData);
+    setToken(tokenValue);
   };
 
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

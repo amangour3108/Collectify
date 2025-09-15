@@ -31,7 +31,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 py-10">
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
       <h1 className="text-3xl font-bold text-black-500 mb-8">
         Micro Collection Partner System
       </h1>

@@ -12,6 +12,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <div className="bg-gray-100">
       <Routes>
         <Route path="/" element={<Navigate to="/login"/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
@@ -19,6 +20,7 @@ function App() {
         <Route path="/partner-dashboard" element={<ProtectedRoute><PartnerDashboard/></ProtectedRoute>}></Route>
         <Route path="/mcp-dashboard" element={<ProtectedRoute><MCPDashboard /></ProtectedRoute>} />
       </Routes>
+      </div>
     </BrowserRouter>
     </AuthProvider>
   )

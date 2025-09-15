@@ -2,44 +2,45 @@ import axios from "axios";
 import React, { useState }from 'react';
 import Signup from "./SignUp";
 import { useNavigate } from 'react-router-dom';
-
+import { useAuth } from "../utils/AuthContext";
 
 
 const Login = () => {
     const navigate = useNavigate();
-
+    const {login} = useAuth();
+    
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await axios.post("http://localhost:8080/api/auth/login", {
-          email,
-          password,
-        });
-    
-        if (response.status === 200) {
-          console.log("Login successful:", response.data);
-          // Store token in localStorage
-          localStorage.setItem("token", response.data.token);
-          
-          // Use response.data.user instead of undefined 'user' variable
-          if (response.data.user.role === "pickupPartner") {
-            navigate("/partner-dashboard");
-          } 
-          else if (response.data.user.role === "microCollectionPartner") {
-            navigate("/mcp-dashboard");
-          } 
-          else {
-            alert("Unknown role, contact admin.");
-          }
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8080/api/auth/login", {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        const { token, user } = response.data;
+        console.log("Login successful:", response.data);
+
+        // ✅ update context and localStorage
+        login(user, token);
+
+        // ✅ redirect based on role
+        if (user.role.trim() === "pickupPartner") {
+          navigate("/partner-dashboard");
+        } else if (user.role.trim() === "microCollectionPartner") {
+          navigate("/mcp-dashboard");
+        } else {
+          alert("Unknown role, contact admin.");
         }
-      } catch (err) {
-        console.error("Login failed:", err.response?.data || err.message);
-        alert("Invalid email or password");
       }
-    };
+    } catch (err) {
+      console.error("Login failed:", err.response?.data || err.message);
+      alert("Invalid email or password");
+    }
+    };  
     
 
     return (

@@ -31,22 +31,19 @@ const Signup = () => {
   };
 
   return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-black-500 mb-8">
-        Micro Collection Partner System
-      </h1>
-
-      <div className="flex w-[80%] max-w-4xl rounded-3xl bg-white shadow-lg overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200/60 to-purple-200/60 font-sans">
+      <h1 className="text-3xl font-extrabold text-blue-900 drop-shadow-lg mb-8">Micro Collection Partner System</h1>
+      <div className="flex w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl">
         {/* Left Side */}
-        <div className="w-1/2 p-10">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Sign Up</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="w-1/2 p-10 backdrop-blur-lg bg-white/40 border border-white/30 flex flex-col justify-center">
+          <h2 className="text-2xl font-bold text-blue-900 mb-6">Sign Up</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <input
               type="text"
               name="name"
               placeholder="Name"
               onChange={handleChange}
-              className="w-full p-3 rounded-full bg-gray-100 border border-pink-300 focus:outline-none"
+              className="w-full px-4 py-2 rounded-xl bg-white/60 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm backdrop-blur-md shadow"
               required
             />
             <input
@@ -54,7 +51,7 @@ const Signup = () => {
               name="email"
               placeholder="Email"
               onChange={handleChange}
-              className="w-full p-3 rounded-full bg-gray-100 border border-pink-300 focus:outline-none"
+              className="w-full px-4 py-2 rounded-xl bg-white/60 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm backdrop-blur-md shadow"
               required
             />
             <input
@@ -62,35 +59,32 @@ const Signup = () => {
               name="password"
               placeholder="Password"
               onChange={handleChange}
-              className="w-full p-3 rounded-full bg-gray-100 border border-pink-300 focus:outline-none"
+              className="w-full px-4 py-2 rounded-xl bg-white/60 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm backdrop-blur-md shadow"
               required
             />
             <select
               name="role"
               onChange={handleChange}
-              className="w-full p-3 rounded-full bg-gray-100 border border-pink-300 focus:outline-none"
+              className="w-full px-4 py-2 rounded-xl bg-white/60 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm backdrop-blur-md shadow"
             >
               <option value="pickupPartner">Pickup Partner</option>
-              <option value="microCollectionPartner">
-                Micro Collection Partner
-              </option>
+              <option value="microCollectionPartner">Micro Collection Partner</option>
             </select>
             <button
               type="submit"
-              className="w-full p-3 rounded-full bg-gradient-to-r from-pink-400 to-pink-600 text-white font-bold"
+              className="w-full bg-gradient-to-r from-blue-400 to-purple-400 text-white py-2 rounded-xl font-bold hover:opacity-90 transition text-sm shadow-lg"
             >
               Sign Up
             </button>
           </form>
         </div>
-
         {/* Right Side */}
-        <div className="w-1/2 bg-gradient-to-br from-blue-500 to-red-500 text-white flex flex-col justify-center items-center p-10">
-          <h2 className="text-2xl font-bold">Already have an account?</h2>
-          <p className="mt-2 mb-4">Login now to access your dashboard.</p>
+        <div className="w-1/2 bg-gradient-to-br from-blue-500 to-purple-500 text-white flex flex-col items-center justify-center p-10">
+          <h2 className="text-2xl font-bold mb-2">Already have an account?</h2>
+          <p className="mb-4 text-sm text-white/90">Login now to access your dashboard.</p>
           <a
             href="/login"
-            className="border border-white px-6 py-2 rounded-full hover:bg-white hover:text-red-500 transition"
+            className="border border-white text-white px-6 py-2 rounded-xl hover:bg-white hover:text-blue-600 text-sm transition font-bold shadow"
           >
             Log In
           </a>

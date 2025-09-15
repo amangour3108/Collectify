@@ -23,8 +23,6 @@ const Login = () => {
       if (response.status === 200) {
         const { token, user } = response.data;
         console.log("Login successful:", response.data);
-
-        // ✅ update context and localStorage
         login(user, token);
 
         // ✅ redirect based on role
@@ -44,50 +42,46 @@ const Login = () => {
     
 
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 font-sans">
-        <h1 className="text-3xl font-bold text-black-500 mb-8">Micro Collection Partner System</h1>
-  
-        <div className="flex w-full max-w-4xl bg-white shadow-lg rounded-2xl overflow-hidden">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200/60 to-purple-200/60 font-sans">
+        <h1 className="text-3xl font-extrabold text-blue-900 drop-shadow-lg mb-8">Micro Collection Partner System</h1>
+        <div className="flex w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl">
           {/* Left Side */}
-          <div className="w-1/2 p-10">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Log In</h2>
-    
-            {/* Form */}
-            <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="w-1/2 p-10 backdrop-blur-lg bg-white/40 border border-white/30 flex flex-col justify-center">
+            <h2 className="text-2xl font-bold text-blue-900 mb-6">Log In</h2>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="text-xs font-bold text-gray-500 mb-1 block uppercase">E-Mail</label>
                 <input
                   type="text"
                   placeholder="Enter E-Mail"
-                  className="w-full px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
+                  className="w-full px-4 py-2 rounded-xl bg-white/60 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm backdrop-blur-md shadow"
                   onChange={ (e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
-  
               <div>
                 <label className="text-xs font-bold text-gray-500 mb-1 block uppercase">Password</label>
                 <input
                   type="password"
                   placeholder="**********"
-                  className="w-full px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-400 text-sm"
+                  className="w-full px-4 py-2 rounded-xl bg-white/60 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm backdrop-blur-md shadow"
                   onChange={ (e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
-  
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-pink-400 to-pink-600 text-white py-2 rounded-full hover:opacity-90 transition text-sm"
+                className="w-full bg-gradient-to-r from-blue-400 to-purple-400 text-white py-2 rounded-xl font-bold hover:opacity-90 transition text-sm shadow-lg"
               >
                 Log In
               </button>
             </form>
           </div>
-  
           {/* Right Side */}
-          <div className="w-1/2 bg-gradient-to-tr from-red-500 to-blue-600 text-white flex flex-col items-center justify-center p-10">
+          <div className="w-1/2 bg-gradient-to-br from-blue-500 to-purple-500 text-white flex flex-col items-center justify-center p-10">
             <h2 className="text-2xl font-bold mb-2">Welcome to login</h2>
             <p className="mb-4 text-sm text-white/90">Don’t have an account?</p>
-            <button onClick={()=>navigate('/signup')}className="border border-white text-white px-6 py-2 rounded-full hover:bg-white hover:text-pink-600 text-sm transition">
+            <button onClick={()=>navigate('/signup')} className="border border-white text-white px-6 py-2 rounded-xl hover:bg-white hover:text-blue-600 text-sm transition font-bold shadow">
               Sign Up
             </button>
           </div>

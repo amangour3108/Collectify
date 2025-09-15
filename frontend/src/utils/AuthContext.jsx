@@ -2,17 +2,23 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+// Initialize state directly from local storage
+const getInitialUser = () => {
+  const storedUser = localStorage.getItem("user");
+  return storedUser ? JSON.parse(storedUser) : null;
+};
 
+const getInitialToken = () => {
+  return localStorage.getItem("token");
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(getInitialUser);
+  const [token, setToken] = useState(getInitialToken);
+
+  // No longer need to re-fetch on mount, as state is already initialized
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const storedToken = localStorage.getItem("token");
-    if (storedUser && storedToken) {
-      setUser(storedUser);
-      setToken(storedToken);
-    }
+    // This effect can now be used for other side effects if needed, but not for initial state.
   }, []);
 
   const login = (userData, tokenValue) => {

@@ -1,59 +1,65 @@
 import Wallet from "../models/Wallet.js";
 import Transaction from "../models/Transaction.js";
-import User from "../models/User.js";
+import mongoose from "mongoose";
 
-export const createWalletIfNotExists = async (userId) => {
-  const existing = await Wallet.findOne({ user: userId });
-  if (!existing) await Wallet.create({ user: userId });
-};
-
-export const getWallet = async (req, res) => {
+const getWallet = async (req, res) => {
   try {
-    const wallet = await Wallet.findOne({ user: req.user._id });
-    res.json(wallet);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch wallet" });
+    const wallet = await Wallet.findOne({ user: req.user.id });
+    if (!wallet) {
+      return res.status(404).json({ message: "Wallet not found" });
+    }
+    res.status(200).json(wallet);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const transferFunds = async (req, res) => {
+const transferFunds = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { to, amount, purpose } = req.body;
+    const from = req.user.id;
 
-    const senderWallet = await Wallet.findOne({ user: req.user._id });
-    const receiverWallet = await Wallet.findOne({ user: to });
+    if (amount <= 0) {
+      throw new Error("Amount must be positive.");
+    }
 
-    if (!senderWallet || !receiverWallet)
-      return res.status(404).json({ error: "Wallet not found" });
+    const fromWallet = await Wallet.findOne({ user: from }).session(session);
+    if (!fromWallet || fromWallet.balance < amount) {
+      throw new Error("Insufficient funds.");
+    }
 
-    if (senderWallet.balance < amount)
-      return res.status(400).json({ error: "Insufficient funds" });
+    const toWallet = await Wallet.findOne({ user: to }).session(session);
+    if (!toWallet) {
+      throw new Error("Recipient not found.");
+    }
 
-    senderWallet.balance -= amount;
-    receiverWallet.balance += amount;
+    fromWallet.balance -= amount;
+    await fromWallet.save({ session });
 
-    await senderWallet.save();
-    await receiverWallet.save();
+    toWallet.balance += amount;
+    await toWallet.save({ session });
 
-    await Transaction.create({
-      from: req.user._id,
+    const newTransaction = new Transaction({
+      from,
       to,
       amount,
       type: "debit",
       purpose,
     });
+    await newTransaction.save({ session });
 
-    await Transaction.create({
-      from: req.user._id,
-      to,
-      amount,
-      type: "credit",
-      purpose,
-    });
+    await session.commitTransaction();
+    session.endSession();
 
-    res.json({ message: "Transfer successful" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Transfer failed" });
+    res.status(200).json({ message: "Funds transferred successfully", newBalance: fromWallet.balance });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ message: error.message });
   }
 };
+
+export { getWallet, transferFunds };

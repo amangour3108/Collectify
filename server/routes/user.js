@@ -4,10 +4,11 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
+// GET all partners (protected)
 router.get("/partners", authMiddleware, async (req, res) => {
   try {
     const partners = await User.find({ role: "pickupPartner" });
-    res.json(partners);
+    res.json(partners.map(p => ({ id: p._id, name: p.name })));
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch partners" });
   }
@@ -22,17 +23,17 @@ router.delete("/partner/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/partners
-router.get("/partners", async (req, res) => {
+// GET a single user by ID (protected)
+router.get("/:id", authMiddleware, async (req, res) => {
   try {
-    const partners = await User.find({ role: "pickupPartner" });
-    console.log(partners);
-    res.json(partners.map(p => ({ id: p._id, name: p.name })));
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching partners:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ message: error.message });
   }
 });
-
 
 export default router;

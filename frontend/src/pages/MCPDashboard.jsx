@@ -7,6 +7,7 @@ import AssignedOrders from "../components/AssignedOrders";
 import UnassignedOrders from "../components/UnassignedOrders";
 import OrderFormPopup from "../components/OrderFormPopup";
 import { useAuth } from "../utils/AuthContext";
+import { toast } from "sonner"; // <-- import sonner toast
 
 export default function MCPDashboard() {
   const { user, logout } = useAuth();
@@ -31,22 +32,29 @@ export default function MCPDashboard() {
       setStats(response.data);
     } catch (err) {
       console.error("Failed to fetch stats:", err);
-      // Fallback to existing state on error
     }
   };
 
   const fetchData = async () => {
     try {
       setLoading(true);
+      const loadingToast = toast.loading("Loading... please wait"); // show loading toast
+
       await Promise.all([
         axios.get("/wallet").then(res => setWallet(res.data)),
-        fetchStats(), // Fetch real stats data
+        fetchStats(),
         axios.get("/users/partners").then(res => setPartners(res.data)),
         axios.get("/mcp/unassigned-orders").then(res => setUnassignedOrders(res.data)),
-        axios.get("/orders").catch(() => ({ data: [] })).then(res => setAssignedOrders(res.data.filter(order => order.assignedTo)))
+        axios
+          .get("/orders")
+          .catch(() => ({ data: [] }))
+          .then(res => setAssignedOrders(res.data.filter(order => order.assignedTo))),
       ]);
+
+      toast.dismiss(loadingToast); // remove loading toast
       setLoading(false);
     } catch (err) {
+      toast.dismiss(); // remove any loading toast
       setError("Failed to fetch data.");
       setLoading(false);
       console.error(err);
@@ -56,7 +64,7 @@ export default function MCPDashboard() {
   const assignPartnerToOrder = async (orderId, partnerId) => {
     try {
       await axios.post("/mcp/assign-partner", { orderId, partnerId });
-      fetchData(); // Refresh data after a successful assignment
+      fetchData();
     } catch (err) {
       setError(err.response?.data?.message || "Failed to assign partner.");
     }
@@ -66,19 +74,14 @@ export default function MCPDashboard() {
     logout();
   };
 
-  if (loading) {
-    return <>
-      <Toaster show={true} text="Loading" />
-      <div className="p-6" />
-    </>;
-  }
-
   if (error) {
     return <div className="p-6 text-red-500">Error: {error}</div>;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200/60 to-purple-200/60 p-6 flex flex-col items-center">
+      <Toaster richColors position="top-center" /> {/* sonner toaster root */}
+
       <div className="w-full max-w-6xl space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-extrabold text-blue-900 drop-shadow-lg">MCP Dashboard</h1>
@@ -118,19 +121,17 @@ export default function MCPDashboard() {
           </div>
         </div>
 
-        
         <WalletTransfer />
-       
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <AssignedOrders orders={assignedOrders} />
           <UnassignedOrders orders={unassignedOrders} partners={partners} onAssign={assignPartnerToOrder} />
         </div>
       </div>
-      <OrderFormPopup 
-        isOpen={isOrderPopupOpen} 
-        onClose={() => setIsOrderPopupOpen(false)} 
-        onOrderPlaced={fetchData} 
+      <OrderFormPopup
+        isOpen={isOrderPopupOpen}
+        onClose={() => setIsOrderPopupOpen(false)}
+        onOrderPlaced={fetchData}
       />
     </div>
   );

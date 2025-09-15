@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Base instance for all API calls
 const instance = axios.create({
-  baseURL: "http://localhost:8080/api", // adjust if using a different port or domain
+  baseURL: import.meta.env.VITE_API_BASE_URL + '/api', // adjust if using a different port or domain
 });
 
 // Add JWT token to headers if present

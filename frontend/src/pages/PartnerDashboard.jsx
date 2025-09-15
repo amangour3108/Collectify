@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Toaster from "../components/Toaster";
+import { Toaster } from "sonner";
 import axios from "../utils/axiosInstance";
 import { useAuth } from "../utils/AuthContext";
 import { toast } from "sonner"; // <-- Sonner

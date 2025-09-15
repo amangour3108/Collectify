@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Toaster from "../components/Toaster";
+import { Toaster } from "sonner";
 import axios from "../utils/axiosInstance";
 import WalletTransfer from "../components/WalletTransfer";
 import PartnerList from "../components/PartnerList";
